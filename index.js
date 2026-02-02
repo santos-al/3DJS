@@ -11,7 +11,7 @@ game.height = HEIGHT;
 const FOREGROUND = "#50FF50";
 const BACKGROUND = "#000000";
 const S = 20;
-const FPS = 240;
+const FPS = 480;
 
 const p1 = { x: 1, y: 0, z: 0 };
 
@@ -94,15 +94,16 @@ function line(p1, p2) {
 }
 
 let angle = 0;
+let dir = "ArrowRight";
 
 function direction() {
   document.addEventListener("keydown", (e) => {
     console.log(e.key);
-    draw(e.key);
+    dir = e.key;
   });
 }
 
-function draw(dir) {
+function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
   if (!dir) {
@@ -131,8 +132,8 @@ function draw(dir) {
     }
   }
   // point(screen(project({ x: 0, y: 0, z: 1 })));
-  draw(dir);
+  setTimeout(draw, 3000 / FPS);
 }
 
 direction();
-draw();
+setTimeout(draw, 3000 / FPS);
