@@ -42,6 +42,8 @@ function project({ x, y, z }) {
 }
 
 let dz = 1;
+let dx = 0;
+let dy = 0;
 
 const vs = [
   { x: 0.25, y: 0.25, z: 0.25 },
@@ -66,6 +68,14 @@ const fs = [
 
 function translate_z({ x, y, z }, dz) {
   return { x, y, z: z + dz };
+}
+
+function translate_y({ x, y, z }, dy) {
+  return { x, y: y + dy, z };
+}
+
+function translate_x({ x, y, z }, dx) {
+  return { x: x + dx, y, z };
 }
 
 function rotate_xz({ x, y, z }, angle) {
@@ -95,9 +105,10 @@ function line(p1, p2) {
 
 let xAngle = 0;
 let yAngle = 0;
-let dir = "ArrowLeft";
+let dir = undefined;
+let trs = undefined;
 
-const controls = new Set([
+const dir_controls = new Set([
   "ArrowLeft",
   "ArrowRight",
   "ArrowUp",
@@ -105,11 +116,15 @@ const controls = new Set([
   "Enter",
 ]);
 
+const trs_controls = new Set(["w", "a", "s", "d", "q"]);
+
 function direction() {
   document.addEventListener("keydown", (e) => {
     console.log(e.key);
-    if (controls.has(e.key)) {
+    if (dir_controls.has(e.key)) {
       dir = e.key;
+    } else if (trs_controls.has(e.key)) {
+      trs = e.key;
     }
   });
 }
@@ -117,6 +132,7 @@ function direction() {
 function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
+
   if (dir == "Enter") {
   } else if (dir == "ArrowRight") {
     xAngle += 2 * Math.PI * dt;
@@ -128,44 +144,56 @@ function draw() {
     yAngle += 2 * Math.PI * dt;
   }
 
-  console.log(yAngle);
+  if (trs == "w") {
+    dy += 0.0005;
+  } else if (trs == "s") {
+    dy -= 0.0005;
+  } else if (trs == "a") {
+    dx -= 0.0005;
+  } else if (trs == "d") {
+    dx += 0.0005;
+  } else if (trs == "q") {
+    dx = 0;
+    dy = 0;
+  }
 
   clear();
   // for (const v of vs) {
   //   point(screen(project(translate_z(rotate_xz(v, angle), dz))));
   // }
-  if (dir == "ArrowLeft" || dir == "ArrowRight" || "Enter") {
-    for (const f of fs) {
-      for (let i = 0; i < f.length; i++) {
-        const a = vs[f[i]];
-        const b = vs[f[(i + 1) % f.length]];
-        line(
-          screen(
-            project(translate_z(rotate_xz(rotate_yz(a, yAngle), xAngle), dz)),
+  console.log(dir);
+  for (const f of fs) {
+    for (let i = 0; i < f.length; i++) {
+      const a = vs[f[i]];
+      const b = vs[f[(i + 1) % f.length]];
+      line(
+        screen(
+          project(
+            translate_z(
+              translate_y(
+                translate_x(rotate_xz(rotate_yz(a, yAngle), xAngle), dx),
+                dy,
+              ),
+              dz,
+            ),
           ),
-          screen(
-            project(translate_z(rotate_xz(rotate_yz(b, yAngle), xAngle), dz)),
+        ),
+        screen(
+          project(
+            translate_z(
+              translate_y(
+                translate_x(rotate_xz(rotate_yz(b, yAngle), xAngle), dx),
+                dy,
+              ),
+              dz,
+            ),
           ),
-        );
-      }
-    }
-  } else if (dir == "ArrowUp" || dir == "ArrowDown" || "Enter") {
-    for (const f of fs) {
-      for (let i = 0; i < f.length; i++) {
-        const a = vs[f[i]];
-        const b = vs[f[(i + 1) % f.length]];
-        line(
-          screen(
-            project(translate_z(rotate_yz(rotate_xz(a, xAngle), yAngle), dz)),
-          ),
-          screen(
-            project(translate_z(rotate_yz(rotate_xz(b, xAngle), yAngle), dz)),
-          ),
-        );
-      }
+        ),
+      );
     }
   }
 
+  console.log(vs);
   setTimeout(draw, 3000 / FPS);
 }
 
