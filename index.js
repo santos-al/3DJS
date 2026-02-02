@@ -11,7 +11,7 @@ game.height = HEIGHT;
 const FOREGROUND = "#50FF50";
 const BACKGROUND = "#000000";
 const S = 20;
-const FPS = 240;
+const FPS = 480;
 
 const p1 = { x: 1, y: 0, z: 0 };
 
@@ -93,30 +93,81 @@ function line(p1, p2) {
   ctx.stroke();
 }
 
-let angle = 0;
+let xAngle = 0;
+let yAngle = 0;
+let dir = "ArrowLeft";
+
+const controls = new Set([
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "Enter",
+]);
+
+function direction() {
+  document.addEventListener("keydown", (e) => {
+    console.log(e.key);
+    if (controls.has(e.key)) {
+      dir = e.key;
+    }
+  });
+}
 
 function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
-  angle += 2 * Math.PI * dt;
+  if (dir == "Enter") {
+  } else if (dir == "ArrowRight") {
+    xAngle += 2 * Math.PI * dt;
+  } else if (dir == "ArrowLeft") {
+    xAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowUp") {
+    yAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowDown") {
+    yAngle += 2 * Math.PI * dt;
+  }
+
+  console.log(yAngle);
 
   clear();
   // for (const v of vs) {
   //   point(screen(project(translate_z(rotate_xz(v, angle), dz))));
   // }
-  for (const f of fs) {
-    for (let i = 0; i < f.length; i++) {
-      const a = vs[f[i]];
-      const b = vs[f[(i + 1) % f.length]];
-      line(
-        screen(project(translate_z(rotate_xz(a, angle), dz))),
-        screen(project(translate_z(rotate_xz(b, angle), dz))),
-        // screen(project(translate_z(rotate_yz(rotate_xz(a, angle), angle), dz))),
-        // screen(project(translate_z(rotate_yz(rotate_xz(b, angle), angle), dz))),
-      );
+  if (dir == "ArrowLeft" || dir == "ArrowRight" || "Enter") {
+    for (const f of fs) {
+      for (let i = 0; i < f.length; i++) {
+        const a = vs[f[i]];
+        const b = vs[f[(i + 1) % f.length]];
+        line(
+          screen(
+            project(translate_z(rotate_xz(rotate_yz(a, yAngle), xAngle), dz)),
+          ),
+          screen(
+            project(translate_z(rotate_xz(rotate_yz(b, yAngle), xAngle), dz)),
+          ),
+        );
+      }
+    }
+  } else if (dir == "ArrowUp" || dir == "ArrowDown" || "Enter") {
+    for (const f of fs) {
+      for (let i = 0; i < f.length; i++) {
+        const a = vs[f[i]];
+        const b = vs[f[(i + 1) % f.length]];
+        line(
+          screen(
+            project(translate_z(rotate_yz(rotate_xz(a, xAngle), yAngle), dz)),
+          ),
+          screen(
+            project(translate_z(rotate_yz(rotate_xz(b, xAngle), yAngle), dz)),
+          ),
+        );
+      }
     }
   }
+
   setTimeout(draw, 3000 / FPS);
 }
 
+direction();
 setTimeout(draw, 3000 / FPS);
