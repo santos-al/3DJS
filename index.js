@@ -93,45 +93,73 @@ function line(p1, p2) {
   ctx.stroke();
 }
 
-let angle = 0;
-let dir = "ArrowRight";
+let xAngle = 0;
+let yAngle = 0;
+let dir = "ArrowLeft";
+
+const controls = new Set([
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "Enter",
+]);
 
 function direction() {
   document.addEventListener("keydown", (e) => {
     console.log(e.key);
-    dir = e.key;
+    if (controls.has(e.key)) {
+      dir = e.key;
+    }
   });
 }
 
 function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
-  if (!dir) {
-    angle = 0;
+  if (dir == "Enter") {
+    // xAngle += 2 * Math.PI;
+    // yAngle += 2 * Math.PI;
   } else if (dir == "ArrowRight") {
-    angle += 2 * Math.PI * dt;
+    xAngle += 2 * Math.PI * dt;
   } else if (dir == "ArrowLeft") {
-    angle -= 2 * Math.PI * dt;
+    xAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowUp") {
+    yAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowDown") {
+    yAngle += 2 * Math.PI * dt;
   }
-  console.log(angle);
+
+  // console.log(yAngle);
 
   clear();
   // for (const v of vs) {
   //   point(screen(project(translate_z(rotate_xz(v, angle), dz))));
   // }
-  for (const f of fs) {
-    for (let i = 0; i < f.length; i++) {
-      const a = vs[f[i]];
-      const b = vs[f[(i + 1) % f.length]];
-      line(
-        screen(project(translate_z(rotate_xz(a, angle), dz))),
-        screen(project(translate_z(rotate_xz(b, angle), dz))),
-        // screen(project(translate_z(rotate_yz(rotate_xz(a, angle), angle), dz))),
-        // screen(project(translate_z(rotate_yz(rotate_xz(b, angle), angle), dz))),
-      );
+  if (dir == "ArrowLeft" || dir == "ArrowRight") {
+    for (const f of fs) {
+      for (let i = 0; i < f.length; i++) {
+        const a = vs[f[i]];
+        const b = vs[f[(i + 1) % f.length]];
+        line(
+          screen(project(translate_z(rotate_xz(a, xAngle), dz))),
+          screen(project(translate_z(rotate_xz(b, xAngle), dz))),
+        );
+      }
+    }
+  } else if (dir == "ArrowUp" || dir == "ArrowDown") {
+    for (const f of fs) {
+      for (let i = 0; i < f.length; i++) {
+        const a = vs[f[i]];
+        const b = vs[f[(i + 1) % f.length]];
+        line(
+          screen(project(translate_z(rotate_yz(a, yAngle), dz))),
+          screen(project(translate_z(rotate_yz(b, yAngle), dz))),
+        );
+      }
     }
   }
-  // point(screen(project({ x: 0, y: 0, z: 1 })));
+
   setTimeout(draw, 3000 / FPS);
 }
 
