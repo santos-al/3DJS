@@ -130,7 +130,7 @@ function draw() {
     yAngle += 2 * Math.PI * dt;
   }
 
-  // console.log(yAngle);
+  console.log(yAngle);
 
   clear();
   // for (const v of vs) {
@@ -142,8 +142,12 @@ function draw() {
         const a = vs[f[i]];
         const b = vs[f[(i + 1) % f.length]];
         line(
-          screen(project(translate_z(rotate_xz(a, xAngle), dz))),
-          screen(project(translate_z(rotate_xz(b, xAngle), dz))),
+          screen(
+            project(translate_z(rotate_xz(rotate_yz(a, yAngle), xAngle), dz)),
+          ),
+          screen(
+            project(translate_z(rotate_xz(rotate_yz(b, yAngle), xAngle), dz)),
+          ),
         );
       }
     }
@@ -153,8 +157,12 @@ function draw() {
         const a = vs[f[i]];
         const b = vs[f[(i + 1) % f.length]];
         line(
-          screen(project(translate_z(rotate_yz(a, yAngle), dz))),
-          screen(project(translate_z(rotate_yz(b, yAngle), dz))),
+          screen(
+            project(translate_z(rotate_yz(rotate_xz(a, xAngle), yAngle), dz)),
+          ),
+          screen(
+            project(translate_z(rotate_yz(rotate_xz(b, xAngle), yAngle), dz)),
+          ),
         );
       }
     }
