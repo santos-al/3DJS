@@ -118,8 +118,6 @@ function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
   if (dir == "Enter") {
-    // xAngle += 2 * Math.PI;
-    // yAngle += 2 * Math.PI;
   } else if (dir == "ArrowRight") {
     xAngle += 2 * Math.PI * dt;
   } else if (dir == "ArrowLeft") {
@@ -136,7 +134,7 @@ function draw() {
   // for (const v of vs) {
   //   point(screen(project(translate_z(rotate_xz(v, angle), dz))));
   // }
-  if (dir == "ArrowLeft" || dir == "ArrowRight") {
+  if (dir == "ArrowLeft" || dir == "ArrowRight" || "Enter") {
     for (const f of fs) {
       for (let i = 0; i < f.length; i++) {
         const a = vs[f[i]];
@@ -151,7 +149,7 @@ function draw() {
         );
       }
     }
-  } else if (dir == "ArrowUp" || dir == "ArrowDown") {
+  } else if (dir == "ArrowUp" || dir == "ArrowDown" || "Enter") {
     for (const f of fs) {
       for (let i = 0; i < f.length; i++) {
         const a = vs[f[i]];
