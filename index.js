@@ -95,24 +95,10 @@ function line(p1, p2) {
 
 let angle = 0;
 
-function direction() {
-  document.addEventListener("keydown", (e) => {
-    console.log(e.key);
-    draw(e.key);
-  });
-}
-
-function draw(dir) {
+function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
-  if (!dir) {
-    angle = 0;
-  } else if (dir == "ArrowRight") {
-    angle += 2 * Math.PI * dt;
-  } else if (dir == "ArrowLeft") {
-    angle -= 2 * Math.PI * dt;
-  }
-  console.log(angle);
+  angle += 2 * Math.PI * dt;
 
   clear();
   // for (const v of vs) {
@@ -130,9 +116,7 @@ function draw(dir) {
       );
     }
   }
-  // point(screen(project({ x: 0, y: 0, z: 1 })));
-  draw(dir);
+  setTimeout(draw, 3000 / FPS);
 }
 
-direction();
-draw();
+setTimeout(draw, 3000 / FPS);
