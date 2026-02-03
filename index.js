@@ -135,13 +135,13 @@ function draw() {
 
   if (dir == "Enter") {
   } else if (dir == "ArrowRight") {
-    xAngle += 2 * Math.PI * dt;
-  } else if (dir == "ArrowLeft") {
-    xAngle -= 2 * Math.PI * dt;
-  } else if (dir == "ArrowUp") {
-    yAngle -= 2 * Math.PI * dt;
-  } else if (dir == "ArrowDown") {
     yAngle += 2 * Math.PI * dt;
+  } else if (dir == "ArrowLeft") {
+    yAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowUp") {
+    xAngle -= 2 * Math.PI * dt;
+  } else if (dir == "ArrowDown") {
+    xAngle += 2 * Math.PI * dt;
   }
 
   if (trs == "w") {
@@ -159,9 +159,10 @@ function draw() {
 
   clear();
   // for (const v of vs) {
-  //   point(screen(project(translate_z(rotate_xz(v, angle), dz))));
+  //   point(
+  //     screen(project(translate_z(rotate_xz(rotate_yz(v, xAngle), yAngle), dz))),
+  //   );
   // }
-  console.log(dir);
   for (const f of fs) {
     for (let i = 0; i < f.length; i++) {
       const a = vs[f[i]];
@@ -171,7 +172,7 @@ function draw() {
           project(
             translate_z(
               translate_y(
-                translate_x(rotate_xz(rotate_yz(a, yAngle), xAngle), dx),
+                translate_x(rotate_xz(rotate_yz(a, xAngle), yAngle), dx),
                 dy,
               ),
               dz,
@@ -182,7 +183,7 @@ function draw() {
           project(
             translate_z(
               translate_y(
-                translate_x(rotate_xz(rotate_yz(b, yAngle), xAngle), dx),
+                translate_x(rotate_xz(rotate_yz(b, xAngle), yAngle), dx),
                 dy,
               ),
               dz,
@@ -193,7 +194,6 @@ function draw() {
     }
   }
 
-  console.log(vs);
   setTimeout(draw, 3000 / FPS);
 }
 
