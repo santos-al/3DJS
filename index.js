@@ -10,8 +10,10 @@ game.width = WIDTH;
 game.height = HEIGHT;
 const FOREGROUND = "#50FF50";
 const BACKGROUND = "#000000";
-const S = 20;
+let S = 3;
 const FPS = 480;
+let size = 0.25;
+let negSize = -0.25;
 
 const p1 = { x: 1, y: 0, z: 0 };
 
@@ -46,15 +48,15 @@ let dx = 0;
 let dy = 0;
 
 const vs = [
-  { x: 0.25, y: 0.25, z: 0.25 },
-  { x: -0.25, y: 0.25, z: 0.25 },
-  { x: -0.25, y: -0.25, z: 0.25 },
-  { x: 0.25, y: -0.25, z: 0.25 },
+  { x: size, y: size, z: size },
+  { x: negSize, y: size, z: size },
+  { x: negSize, y: negSize, z: size },
+  { x: size, y: negSize, z: size },
 
-  { x: 0.25, y: 0.25, z: -0.25 },
-  { x: -0.25, y: 0.25, z: -0.25 },
-  { x: -0.25, y: -0.25, z: -0.25 },
-  { x: 0.25, y: -0.25, z: -0.25 },
+  { x: size, y: size, z: negSize },
+  { x: negSize, y: size, z: negSize },
+  { x: negSize, y: negSize, z: negSize },
+  { x: size, y: negSize, z: negSize },
 ];
 
 const fs = [
@@ -65,6 +67,14 @@ const fs = [
   [2, 6],
   [3, 7],
 ];
+
+function upScale() {
+  dz -= 0.025;
+}
+
+function downScale() {
+  dz += 0.025;
+}
 
 function translate_z({ x, y, z }, dz) {
   return { x, y, z: z + dz };
@@ -107,6 +117,7 @@ let xAngle = 0;
 let yAngle = 0;
 let dir = undefined;
 let trs = undefined;
+let scale = undefined;
 
 const dir_controls = new Set([
   "ArrowLeft",
@@ -118,6 +129,8 @@ const dir_controls = new Set([
 
 const trs_controls = new Set(["w", "a", "s", "d", "q"]);
 
+const scale_controls = new Set(["-", "+"]);
+
 function direction() {
   document.addEventListener("keydown", (e) => {
     console.log(e.key);
@@ -125,6 +138,8 @@ function direction() {
       dir = e.key;
     } else if (trs_controls.has(e.key)) {
       trs = e.key;
+    } else if (scale_controls.has(e.key)) {
+      scale = e.key;
     }
   });
 }
@@ -132,6 +147,15 @@ function direction() {
 function draw() {
   dt = 1 / FPS;
   // dz += 1 * dt;
+
+  // scale
+  if (scale == "+") {
+    upScale();
+    scale = undefined;
+  } else if (scale == "-") {
+    downScale();
+    scale = undefined;
+  }
 
   if (dir == "Enter") {
   } else if (dir == "ArrowRight") {
