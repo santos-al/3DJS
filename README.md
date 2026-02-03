@@ -10,6 +10,10 @@ Use respective arrow keys
 
 Use WASD
 
+### Scale
+
+Use '-' and '+'
+
 ### Stop
 
 - 'Enter' stops rotation
